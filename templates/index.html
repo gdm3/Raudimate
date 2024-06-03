@@ -7,14 +7,14 @@
   <body>
     <h1>Raudimate!</h1>
     <div class="form">
-        <form action="/">
+        <form action="/" method="POST", enctype="multipart/form-data">
             <label for="title">Title:</label><br>
             <input type="text" id="title" name="title" placeholder="Title"><br>
             <label for="body">Body:</label><br>
-            <textarea name="paragraph_text" cols="40" rows="9", id="body", placeholder="Body"></textarea><br>
-            <label for="image" class="btn">Select Image</label>
-            <input type="file" id="image" name="image", style="display: none;"><br>
-            <input type="submit" value="Submit", class="submit">
+            <textarea name="body" cols="40" rows="9" id="body" placeholder="Body"></textarea><br>
+            <label for="file" class="btn">Select Image</label>
+            <input type="file" id="file" name="file" style="display: none;"><br>
+            <input type="submit" value="Submit > " class="submit">
         </form> 
     </div>
   </body>
