@@ -57,6 +57,7 @@ for segment in segments:
     subtitles.append([segment.text, round(segment.start, 2), round(segment.end, 2)])
     print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
 
+subtitles = audio.split_whisper(subtitles)
 
 titleLength = round(float(ffmpeg.probe('audio/title.mp3')['format']['duration']), 2)
 
