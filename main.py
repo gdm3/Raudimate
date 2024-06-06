@@ -2,31 +2,34 @@
 import audio, video, ffmpeg, os
 from faster_whisper import WhisperModel
 from PIL import ImageGrab
+import sys
 
-with open('utils/config.txt', 'a+') as file: # Check if API key exists, if not create it
-    file.seek(0)
-    if not file.read():
-        file.write(input("API Key? \n-> "))
-    file.seek(0)
-    api_key = file.read()    
+def grab_inputs():
+    title = input("Title? \n-> ")
 
-title = input("Title? \n-> ")
+    print("Body? \nC-Z -> ")
+    lines = []
+    while True:
+        try:
+            line = input()
+            lines.append(line)
+        except EOFError:
+            break
+    body = '\n'.join(lines)
 
-print("Body? \nC-Z -> ")
-lines = []
-while True:
+    input("Title image? \n-> ")
     try:
-        line = input()
-        lines.append(line)
-    except EOFError:
-        break
-body = '\n'.join(lines)
-
-if input("Create new audio? \n-> ") == "Y":
-    audio.generate_audio(title, 'title.mp3', api_key)
-    audio.generate_audio(body, 'body.mp3', api_key)
+        im = ImageGrab.grabclipboard()
+        sc = im.width / 405
+        im = im.resize((405, int(im.height/sc)))
+        im.save('utils/title.png','PNG')
+    except AttributeError as e:
+        print("Clipbord does not contain an image!")
+        raise(e)
     
-if input("Clear files? \n-> ") == "Y":
+    return title, body
+
+def remove_files():
     try:
         os.remove("videos/spliced.mp4")
         os.remove("videos/imaged.mp4")
@@ -35,16 +38,32 @@ if input("Clear files? \n-> ") == "Y":
         os.remove("videos/truncate.mp4")
     except:
         print("-> Failed to remove files")
-        
-input("Title image? \n-> ")
-try:
-    im = ImageGrab.grabclipboard()
-    sc = im.width / 405
-    im = im.resize((405, int(im.height/sc)))
-    im.save('utils/title.png','PNG')
-except AttributeError as e:
-    print("Clipbord does not contain an image!")
-    raise(e)
+
+if sys.argv[1] == '-a':
+    auto = True
+    title = sys.argv[2]
+    body = sys.argv[3]
+else:
+    auto = False
+    title, body = grab_inputs()
+     
+with open('utils/config.txt', 'a+') as file: # Check if API key exists, if not create it
+    file.seek(0)
+    if not file.read():
+        file.write(input("API Key? \n-> "))
+    file.seek(0)
+    api_key = file.read()    
+if auto:
+    audio.generate_audio(title, 'title.mp3', api_key)
+    audio.generate_audio(body, 'body.mp3', api_key)
+    remove_files()  
+else:
+    if input("Create new audio? \n-> ") == "Y":
+        audio.generate_audio(title, 'title.mp3', api_key)
+        audio.generate_audio(body, 'body.mp3', api_key)
+    
+    if input("Clear files? \n-> ") == "Y":
+        remove_files()    
 
 video.create_spliced()
 
