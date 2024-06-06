@@ -41,8 +41,11 @@ def remove_files():
 
 if sys.argv[1] == '-a':
     auto = True
-    title = sys.argv[2]
-    body = sys.argv[3]
+    with open('utils/com.txt', 'r') as file:
+        lines = file.readlines()
+        title = lines[0]
+        body = lines[1]
+    os.remove('utils/com.txt')
 else:
     auto = False
     title, body = grab_inputs()
