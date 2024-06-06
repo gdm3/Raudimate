@@ -1,5 +1,8 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, send_file
 import os
+
+def get_elapsed(): # Get elapsed time out of 100, 100 = done
+    return 100
 
 app = Flask(__name__)
 
@@ -19,6 +22,11 @@ def main():
             file.write(request.form['body'])
             
         os.system('python3 main.py -a')
-        return 'Submitted'
+        return 'submitted'
 
+@app.route('/download-file/', methods=['GET'])
+def download_files():
+    if get_elapsed() == 100:
+        return send_file('videos/truncate.mp4')
+    return get_elapsed()
 app.run('0.0.0.0')
