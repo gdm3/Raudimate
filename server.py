@@ -1,8 +1,5 @@
 from flask import Flask, render_template, request, flash, send_file
-import os
-
-def get_elapsed(): # Get elapsed time out of 100, 100 = done
-    return 100
+import os, subprocess
 
 app = Flask(__name__)
 
@@ -21,12 +18,7 @@ def main():
             file.write(request.form['title'] + '\n')
             file.write(request.form['body'])
             
-        os.system('python3 main.py -a')
-        return 'submitted'
+        #subprocess.call('python3 main.py -a', shell=True)
+        return send_file('videos/truncate.mp4', as_attachment=True)
 
-@app.route('/download-file/', methods=['GET'])
-def download_files():
-    if get_elapsed() == 100:
-        return send_file('videos/truncate.mp4')
-    return get_elapsed()
 app.run('0.0.0.0')
